@@ -5,6 +5,7 @@ from functools import update_wrapper
 
 def check_authorized_user(authorized_users):
     if authorized_users == "*":
+        session["user_logged_in"] = True
         return True
     email = session["user_email"]
     authorized_users = authorized_users.split(',')
@@ -26,5 +27,5 @@ class login_required:
             if check_authorized_user(self.authorized_users):
                 return func(*args, **kwargs)
             else:
-                return Response(status=401)
+                return Response(status=403)
         return update_wrapper(inner, func)

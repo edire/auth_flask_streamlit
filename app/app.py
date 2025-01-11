@@ -1,7 +1,7 @@
 #%%
 
 import os
-from flask import Flask, redirect, Response, session
+from flask import Flask, redirect, Response, session, url_for
 import subprocess
 import _google_oauth
 import _tools
@@ -24,11 +24,10 @@ def home():
 
 @app.route('/auth_verify')
 def auth_verify():
-    if 'user_logged_in' in session:
-        if session["user_logged_in"] == True:
-            return Response(status=200)
+    if session.get("user_logged_in"):
+        return Response(status=200)
     if 'user_email' in session:
-        if _tools.check_authorized_user(authorized_users="*@mastermind.com"):
+        if _tools.check_authorized_user(authorized_users=AUTHORIZED_USERS):
             return Response(status=200)
         return Response(status=403)
     return Response(status=401)
@@ -41,7 +40,7 @@ def unauthorized():
 
 @app.route('/git_pull', methods=['GET'])
 def git_pull():
-    if _tools.check_authorized_user(authorized_users="eric.dire@mastermind.com"):
+    if _tools.check_authorized_user(authorized_users=AUTHORIZED_USERS):
         os.chdir('/app/git_repo')
         command = ["git", "fetch", "origin", f"{GIT_BRANCH}"]
         subprocess.call(command)
@@ -50,7 +49,7 @@ def git_pull():
         command = ["pip", "install", "-r", "requirements.txt"]
         subprocess.call(command)
         return 'Boom, done!', 200
-    return 'Unauthorized', 403
+    return redirect(url_for('unauthorized'))
 
 
 if __name__ == "__main__":

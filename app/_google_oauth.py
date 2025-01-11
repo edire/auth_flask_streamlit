@@ -12,8 +12,7 @@ gauth_bp = Blueprint('gauth', __name__)
 
 #%% Google OAuth Functions
 
-LOGIN_TITLE = os.getenv('LOGIN_TITLE', 'Login')
-CLIENT_SECRETS_FILE = os.getenv('CLIENT_SECRETS_FILE')
+CLIENT_SECRETS_FILE = os.getenv('GAUTH_SECRETS_FILE')
 SCOPES=["openid", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"]
 
 
